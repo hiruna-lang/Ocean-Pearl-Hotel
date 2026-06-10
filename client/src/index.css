@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 font-body;
+  background-image:
+    radial-gradient(circle at top left, rgba(37, 127, 189, 0.1), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(217, 180, 111, 0.12), transparent 26%);
+}
+
+::selection {
+  background: rgba(217, 180, 111, 0.35);
+}
+
+.container-page {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.section-pad {
+  @apply py-16 sm:py-20;
+}
+
+.card-glass {
+  @apply rounded-3xl border border-white/60 bg-white/80 shadow-glow backdrop-blur;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-full bg-ocean-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-ocean-700;
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center rounded-full border border-ocean-800/20 bg-white px-6 py-3 text-sm font-semibold text-ocean-900 transition hover:border-ocean-700 hover:text-ocean-700;
+}
+
+.input-field {
+  @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-ocean-500 focus:ring-2 focus:ring-ocean-200;
+}
+
+.label-field {
+  @apply mb-2 block text-sm font-semibold text-slate-700;
+}
