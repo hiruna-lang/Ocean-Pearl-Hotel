@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import { query } from '../config/db.js';
 
 export const protect = async (req, res, next) => {
   let token;
@@ -13,8 +13,21 @@ export const protect = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'ocean-pearl-hotel-dev-secret');
+    const [rows] = await query('SELECT id, name, email, created_at FROM users WHERE id = ? LIMIT 1', [decoded.id]);
+
+    if (rows.length === 0) {
+      return res.status(401).json({ message: 'Not authorized, token failed' });
+    }
+
+    req.user = {
+      id: rows[0].id,
+      _id: String(rows[0].id),
+      name: rows[0].name,
+      email: rows[0].email,
+      role: 'admin'
+    };
+
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Not authorized, token failed' });

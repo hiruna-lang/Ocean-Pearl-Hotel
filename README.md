@@ -1,6 +1,6 @@
 # Ocean Pearl Hotel
 
-Ocean Pearl Hotel is a full-stack hotel booking and management website built with React, Vite, Tailwind CSS, Node.js, Express, MongoDB, JWT, Multer, and Axios.
+Ocean Pearl Hotel is a full-stack hotel booking and management website built with React, Vite, Tailwind CSS, Node.js, Express, MySQL, JWT, Multer, and Axios.
 
 ## Project Structure
 
@@ -24,7 +24,7 @@ Ocean-Pearl-Hotel/
 ## Backend
 
 - Node.js + Express.js
-- MongoDB with Mongoose
+- MySQL with mysql2/promise
 - JWT authentication
 - bcryptjs password hashing
 - Multer image uploads
@@ -83,7 +83,7 @@ Ocean-Pearl-Hotel/
 
 1. Install dependencies from the project root.
 2. Copy `.env.example` to `.env` and fill in your values.
-3. Start MongoDB locally or use MongoDB Atlas.
+3. Start MySQL in XAMPP and make sure phpMyAdmin can access the `my_project_db` database.
 4. Run the client and server together with the root dev script.
 
 ## Scripts

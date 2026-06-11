@@ -1,8 +1,24 @@
+import { useEffect, useState } from 'react';
+import api from '../api/axios';
 import BookingForm from '../components/BookingForm';
 import SectionTitle from '../components/SectionTitle';
-import { rooms } from '../data/sampleData';
 
 export default function Booking() {
+  const [rooms, setRooms] = useState([]);
+
+  useEffect(() => {
+    const loadRooms = async () => {
+      try {
+        const { data } = await api.get('/rooms');
+        setRooms(data);
+      } catch (error) {
+        setRooms([]);
+      }
+    };
+
+    loadRooms();
+  }, []);
+
   return (
     <div className="section-pad">
       <div className="container-page grid gap-10 lg:grid-cols-[1fr_0.7fr]">

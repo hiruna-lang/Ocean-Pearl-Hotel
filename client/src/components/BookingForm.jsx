@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import api from '../api/axios';
 
 const initialState = {
   customerName: '',
@@ -13,6 +14,9 @@ const initialState = {
 
 export default function BookingForm() {
   const [form, setForm] = useState(initialState);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -22,10 +26,21 @@ export default function BookingForm() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    alert('Booking form ready. Connect this to the backend API to save bookings.');
-    setForm(initialState);
+    setLoading(true);
+    setMessage('');
+    setError('');
+
+    try {
+      await api.post('/bookings', form);
+      setMessage('Booking submitted successfully. We will contact you shortly.');
+      setForm(initialState);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Unable to submit booking. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,7 +84,12 @@ export default function BookingForm() {
           <input id="specialRequest" name="specialRequest" value={form.specialRequest} onChange={handleChange} className="input-field" placeholder="Airport pickup, honeymoon setup, etc." />
         </div>
       </div>
-      <button type="submit" className="btn-primary mt-6 w-full sm:w-auto">Submit Booking</button>
+      {message && <p className="mt-5 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{message}</p>}
+      {error && <p className="mt-5 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">{error}</p>}
+
+      <button type="submit" disabled={loading} className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto">
+        {loading ? 'Submitting...' : 'Submit Booking'}
+      </button>
     </form>
   );
 }

@@ -1,9 +1,48 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { rooms } from '../data/sampleData';
+import api from '../api/axios';
 
 export default function RoomDetails() {
   const { id } = useParams();
-  const room = rooms.find((item) => item.id === id) || rooms[0];
+  const [room, setRoom] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const loadRoom = async () => {
+      try {
+        const { data } = await api.get(`/rooms/${id}`);
+        setRoom(data);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Unable to load room details.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRoom();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="section-pad">
+        <div className="container-page">
+          <p className="text-sm font-semibold text-slate-600">Loading room...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !room) {
+    return (
+      <div className="section-pad">
+        <div className="container-page">
+          <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">{error || 'Room not found.'}</p>
+          <Link to="/rooms" className="btn-outline mt-6">Back to Rooms</Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="section-pad">
@@ -16,7 +55,7 @@ export default function RoomDetails() {
             <p className="mt-4 text-sm uppercase tracking-[0.2em] text-slate-500">{room.roomType}</p>
             <p className="mt-5 text-base leading-7 text-slate-600">{room.description}</p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {room.facilities.map((item) => (
+              {(room.facilities || []).map((item) => (
                 <span key={item} className="rounded-full bg-ocean-50 px-3 py-2 text-xs font-semibold text-ocean-800">{item}</span>
               ))}
             </div>

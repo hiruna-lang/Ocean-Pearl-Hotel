@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../api/axios';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,22 +18,16 @@ export default function Login() {
     setLoading(true);
     setError('');
 
-    const demoEmail = 'admin@oceanpearlhotel.com';
-    const demoPassword = 'admin123';
-
-    setTimeout(() => {
-      const isValidLogin = form.email === demoEmail && form.password === demoPassword;
-
-      if (!isValidLogin) {
-        setError('Use the sample credentials below to open the admin dashboard.');
-        setLoading(false);
-        return;
-      }
-
+    try {
+      const { data } = await api.post('/auth/login', form);
+      localStorage.setItem('oceanPearlAdminToken', data.token);
       localStorage.setItem('oceanPearlAdminLoggedIn', 'true');
       navigate('/admin');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Unable to login. Please check your credentials.');
+    } finally {
       setLoading(false);
-    }, 450);
+    }
   };
 
   return (

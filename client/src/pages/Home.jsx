@@ -1,13 +1,37 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import api from '../api/axios';
 import Hero from '../components/Hero';
 import SectionTitle from '../components/SectionTitle';
 import RoomCard from '../components/RoomCard';
 import FacilityCard from '../components/FacilityCard';
 import GalleryGrid from '../components/GalleryGrid';
-import { rooms, facilities, galleryImages, reviews } from '../data/sampleData';
+import { facilities, reviews } from '../data/sampleData';
 
 export default function Home() {
+  const [rooms, setRooms] = useState([]);
+  const [galleryImages, setGalleryImages] = useState([]);
+
+  useEffect(() => {
+    const loadHomeData = async () => {
+      try {
+        const [roomsResponse, galleryResponse] = await Promise.all([
+          api.get('/rooms'),
+          api.get('/gallery')
+        ]);
+
+        setRooms(roomsResponse.data);
+        setGalleryImages(galleryResponse.data);
+      } catch (error) {
+        setRooms([]);
+        setGalleryImages([]);
+      }
+    };
+
+    loadHomeData();
+  }, []);
+
   return (
     <>
       <Hero />
